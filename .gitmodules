@@ -1,16 +1,13 @@
-[submodule "vendor/ogg"]
-	path = vendor/ogg
-	url = https://github.com/xiph/ogg.git
-	branch = master
-[submodule "vendor/opus"]
-	path = vendor/opus
-	url = https://github.com/xiph/opus.git
-	branch = master
-[submodule "vendor/opusfile"]
-	path = vendor/opusfile
-	url = https://github.com/xiph/opusfile.git
-	branch = master
 [submodule "vendor/librw"]
 	path = vendor/librw
 	url = git@github.com:Takuhatsu/librw.git
 	branch = master
+[submodule "vendor/ogg"]
+	path = vendor/ogg
+	url = git@github.com:Takuhatsu/ogg.git
+[submodule "vendor/opus"]
+	path = vendor/opus
+	url = git@github.com:Takuhatsu/opus.git
+[submodule "vendor/opusfile"]
+	path = vendor/opusfile
+	url = git@github.com:Takuhatsu/opusfile.git
