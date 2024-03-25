@@ -21,7 +21,7 @@
 #include "User.h"
 #include "World.h"
 
-#ifdef PS2_HUD
+// PS2 HUD in re3takuhatsu
 #define MONEY_X 100.0f
 #define WEAPON_X 91.0f
 #define AMMO_X 59.0f
@@ -33,19 +33,6 @@
 #define SUBS_Y 83.0f
 #define WASTEDBUSTED_Y 122.0f
 #define BIGMESSAGE_Y 80.0f
-#else
-#define MONEY_X 110.0f
-#define WEAPON_X 99.0f
-#define AMMO_X 66.0f
-#define HEALTH_X 110.0f
-#define STARS_X 60.0f
-#define ZONE_Y 30.0f
-#define VEHICLE_Y 55.0f
-#define CLOCK_X 111.0f
-#define SUBS_Y 68.0f
-#define WASTEDBUSTED_Y 82.0f
-#define BIGMESSAGE_Y 84.0f
-#endif
 
 #ifdef FIX_BUGS
 #define TIMER_RIGHT_OFFSET 34.0f // Taken from VC frenzy timer

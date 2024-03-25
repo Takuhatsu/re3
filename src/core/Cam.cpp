@@ -3754,17 +3754,21 @@ CCam::Process_SpecialFixedForSyphon(const CVector &CameraTarget, float, float, f
 	        (KEYJUSTDOWN(rsLCTRL) || KEYJUSTDOWN(rsRCTRL)) && KEYDOWN((RsKeyCodes)key))
 #define CTRLDOWN(key) ((KEYDOWN(rsLCTRL) || KEYDOWN(rsRCTRL)) && KEYDOWN((RsKeyCodes)key))
 
-
+// FOV controlls by takuhatsu
 void
 CCam::Process_Debug(const CVector&, float, float, float)
 {
 	static float Speed = 0.0f;
 	static float PanSpeedX = 0.0f;
 	static float PanSpeedY = 0.0f;
+	static float MinFOV = 10.0f;
+	static float MaxFOV = 140.0f;
+	static bool FOVActivated = false;
 	CVector TargetCoors;
 
+
 	RwCameraSetNearClipPlane(Scene.camera, DEFAULT_NEAR);
-	FOV = DefaultFOV;
+	// FOV = DefaultFOV; If enabled, FOV zoom in/out functuin is not working 
 	Alpha += DEGTORAD(CPad::GetPad(1)->GetLeftStickY()) / 50.0f;
 	Beta  += DEGTORAD(CPad::GetPad(1)->GetLeftStickX()*1.5f) / 19.0f;
 	if(CPad::GetPad(0)->GetLeftMouse()){
@@ -3779,6 +3783,33 @@ CCam::Process_Debug(const CVector&, float, float, float)
 	if(Alpha > DEGTORAD(89.5f)) Alpha = DEGTORAD(89.5f);
 	else if(Alpha < DEGTORAD(-89.5f)) Alpha = DEGTORAD(-89.5f);
 
+	if(CamTargetEntity->IsVehicle() || CamTargetEntity->IsPed()) {
+
+		if(KEYDOWN('Y') || KEYDOWN('H') || KEYDOWN('J')) { 
+			FOVActivated = true; 
+		}
+
+		if(!FOVActivated) { 
+			FOV = DefaultFOV; 
+		}
+
+		if(FOVActivated) {
+			if(KEYDOWN('Y')) {
+				if(FOV > MinFOV) FOV -= 1.0f;
+			} else if(KEYDOWN('H')) {
+				if(FOV < MaxFOV) FOV += 1.0f;
+			} else if(KEYDOWN('J')) {
+
+				FOV = DefaultFOV;
+			}
+		}
+
+		if(FOV < MinFOV)
+			FOV = MinFOV;
+		else if(FOV > MaxFOV)
+			FOV = MaxFOV;
+	}
+
 	if(CPad::GetPad(1)->GetSquare() || KEYDOWN('W'))
 		Speed += 0.1f;
 	else if(CPad::GetPad(1)->GetCross() || KEYDOWN('S'))
@@ -3789,6 +3820,10 @@ CCam::Process_Debug(const CVector&, float, float, float)
 	if(Speed < -70.0f) Speed = -70.0f;
 
 
+	if(KEYDOWN(rsUP) || KEYDOWN('W')) 
+		PanSpeedY += 0.1f;
+	if(KEYDOWN(rsDOWN) || KEYDOWN('S')) 
+		PanSpeedY -= 0.1f;
 	if(KEYDOWN(rsRIGHT) || KEYDOWN('D'))
 		PanSpeedX += 0.1f;
 	else if(KEYDOWN(rsLEFT) || KEYDOWN('A'))
@@ -3797,7 +3832,6 @@ CCam::Process_Debug(const CVector&, float, float, float)
 		PanSpeedX = 0.0f;
 	if(PanSpeedX > 70.0f) PanSpeedX = 70.0f;
 	if(PanSpeedX < -70.0f) PanSpeedX = -70.0f;
-
 
 	if(KEYDOWN(rsUP))
 		PanSpeedY += 0.1f;
@@ -3808,15 +3842,14 @@ CCam::Process_Debug(const CVector&, float, float, float)
 	if(PanSpeedY > 70.0f) PanSpeedY = 70.0f;
 	if(PanSpeedY < -70.0f) PanSpeedY = -70.0f;
 
-
 	Front = TargetCoors - Source;
 	Front.Normalise();
-	Source = Source + Front*Speed;
+	Source = Source + Front * Speed;
 
-	Up = CVector{ 0.0f, 0.0f, 1.0f };
+	Up = CVector{0.0f, 0.0f, 1.0f};
 	CVector Right = CrossProduct(Front, Up);
 	Up = CrossProduct(Right, Front);
-	Source = Source + Up*PanSpeedY + Right*PanSpeedX;
+	Source = Source + Up * PanSpeedY + Right * PanSpeedX;
 
 	if(Source.z < -450.0f)
 		Source.z = -450.0f;
@@ -3855,7 +3888,7 @@ CCam::Process_Debug(const CVector&, float, float, float)
 		sprintf(str, "CamX: %f CamY: %f  CamZ:  %f", Source.x, Source.y, Source.z);
 		sprintf(str, "Frontx: %f, Fronty: %f, Frontz: %f ", Front.x, Front.y, Front.z);
 		sprintf(str, "Look@: %f, Look@: %f, Look@: %f ", Front.x + Source.x, Front.y + Source.y, Front.z + Source.z);
-	}
+	}	
 }
 #else
 void
